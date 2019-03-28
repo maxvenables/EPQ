@@ -1,2 +1,2 @@
 # EPQ
-All programming material in for me EPQ
+All programming material for my EPQ
