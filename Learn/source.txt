@@ -1,2 +1,3 @@
-https://www.w3schools.com/js/
-https://learnxinyminutes.com/docs/html/
+https://www.w3schools.com/js/ - 28/03/19
+https://learnxinyminutes.com/docs/html/ - 28/03/19
+https://www.w3schools.com/graphics - 29/03/19
