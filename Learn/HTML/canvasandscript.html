@@ -1,0 +1,15 @@
+<!doctype html> <!-- always start document like this -->
+<html> <!-- everything enclosed by html tags -->
+    <body> <!-- contains visable data -->
+        <canvas id="myCanvas" width="200" height = "200" style="border:1px solid #d3d3d3"></canvas> <!-- Generates canvas with name myCanvas width 200 heght 200 -->
+        <script>
+        var canvas = document.getElementById("myCanvas"); //Stores canvas from html into a variable
+        var context = canvas.getContext("2d"); //Gets object context which can be used to render graphics
+        context.moveTo(0,0); //Moves context to 0,0
+        context.lineTo(100,100); //Adds point on line path of context
+        context.lineTo(100,0);
+        context.stroke(); //Draws line
+
+        </script>
+    </body>
+</html> <!-- tags with / indicate end-->
