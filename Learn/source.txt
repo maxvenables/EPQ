@@ -2,3 +2,4 @@ https://www.w3schools.com/js/ - 28/03/19
 https://learnxinyminutes.com/docs/html/ - 28/03/19
 https://www.w3schools.com/graphics - 29/03/19
 https://learnxinyminutes.com/docs/javascript/ - 28/04/19
+https://www.w3schools.com/html/html5_canvas.asp - 06/07/19
