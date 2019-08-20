@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <script type="text/javascript">
+    class vec { //Setting up vec class to store vectors in future
+      constructor(x,y){
+        this.x = x;
+        this.y = y;
+      }
+      add(vec2){ //setting up basic vector operations
+        this.x += vec2.x;
+        this.y += vec2.y;
+      }
+      sub(vec2){
+        this.x -= vec2.x;
+        this.y -= vec2.y;
+      }
+      mult(scalar){
+        this.x *= scalar;
+        this.y *= scalar;
+      }
+      divi(scalar){
+        this.x /= scalar;
+        this.y /= scalar;
+      }
+      dotproduct(vec2){
+        return this.x*vec2.x + this.y*vec2.y;
+      }
+    }
+    class ob { //Setting up basic object class which other rigid bodies will extend from
+      constructor(position, speed, acceleration, mass){
+        this.position = position; //stored as vector
+        this.speed = speed; //stored as vector
+        this.acceleration = acceleration; //stored as vector
+        this.mass = mass; //stored as scalar
+      }
+      addDispByFrame(){ //Will be called every cycle to change displacement based on speed
+        this.speed.divi(60);
+        this.position.add(this.speed);//speed stored in m/s so divided by 60 for 60fps
+        this.speed.mult(60);
+      }
+      addSpeedByFrame(){
+        this.acceleration.divi(60);
+        this.speed.add(this.acceleration);//speed stored in m/s so divided by 60 for 60fps
+        this.acceleration.mult(60);
+      }
+    }
+
+    class circle extends ob{
+      constructor(position, speed, acceleration, mass,radius){
+        super(position, speed, acceleration, mass);
+        this.radius = radius
+      }
+    }
+
+    var position = new vec(0,0);
+    var speed = new vec(10, 0);
+    var acceleration = new vec(0,0);
+    var mass = 10;
+
+    var boi = new circle(position, speed, acceleration, mass,20);
+    console.log(boi.position, boi.radius);
+
+
+  </script>
+</body>
+</html>
