@@ -69,21 +69,102 @@
     }
 
     function polygonCollision(ob1, ob2){
+      //code copied and adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] starts here
+      var a = ob1.points;
+      var b = ob2.points;
+      var polygons = [a,b];
+      var minA, maxA, projected, i, i1, j, minB, maxB;
+      var minIntersection = Infinity;
+      var intersectionNormal = undefined;
+      for (i = 0; i < polygons.length; i++) {
 
+          // for each polygon, look at each edge of the polygon, and determine if it separates
+          // the two shapes
+          var polygon = polygons[i];
+          for (i1 = 0; i1 < polygon.length; i1++) {
+
+              // grab 2 vertices to create an edge
+              var i2 = (i1 + 1) % polygon.length;
+              var p1 = polygon[i1];
+              var p2 = polygon[i2];
+
+              // find the normalised line perpendicular to this edge
+              len1 = p2.y - p1.y
+              len2 = p1.x - p2.x
+              sumsquare = len1**2 + len2**2
+              sqroot = sumsquare**0.5
+              var normal = { x: len1/sqroot, y: len2/sqroot };
+
+              minA = maxA = undefined;
+              // for each vertex in the first shape, project it onto the line perpendicular to the edge
+              // and keep track of the min and max of these values
+              for (j = 0; j < a.length; j++) {
+                  projected = normal.x * a[j].x + normal.y * a[j].y;
+                  if (minA === undefined || projected < minA) {
+                      minA = projected;
+                  }
+                  if (maxA === undefined || projected > maxA) {
+                      maxA = projected;
+                  }
+              }
+
+              // for each vertex in the second shape, project it onto the line perpendicular to the edge
+              // and keep track of the min and max of these values
+              minB = maxB = undefined;
+              for (j = 0; j < b.length; j++) {
+                  projected = normal.x * b[j].x + normal.y * b[j].y;
+                  if (minB === undefined || projected < minB) {
+                      minB = projected;
+                  }
+                  if (maxB === undefined || projected > maxB) {
+                      maxB = projected;
+                  }
+              }
+
+              // if there is no overlap between the projects, the edge we are looking at separates the two
+              // polygons, and we know there is no overlap
+              if (maxA < minB || maxB < minA) {
+                  console.log("polygons don't intersect!");
+                  return false;
+              }
+              else{
+                if ((maxA - minB) < minIntersection){
+                  minIntersection = maxA - minB;
+                  intersectionNormal = normal;
+                }
+                if ((maxB - minA) < minIntersection){
+                  minIntersection = maxB - minA;
+                  normal.x = -normal.x;
+                  normal.y = -normal.y;
+                  intersectionNormal = normal
+                }
+
+              }
+              }
+          }
+      console.log("polygons intersect!");
+      var returnlist = [true, minIntersection, intersectionNormal];
+      return returnlist;
+      //code copied and adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] ends here
 
     }
+
+    // function fisqrt(num){
+    //   //algorithm that efficiently finds the inverse quare root of a number
+    //
+    // }
     //used for testing v
     var position = new vec(0,0);
     var speed = new vec(10, 0);
     var acceleration = new vec(0,0);
     var mass = 10;
     var points = [{x:0,y:0},{x:0,y:5},{x:5,y:5},{x:5,y:0}];
-    var points1 = [{x:5,y:0},{x:5,y:5},{x:10,y:0},{x:10,y:5}];
+    var points1 = [{x:1,y:1},{x:1,y:2},{x:2,y:2},{x:2,y:1}];
 
     var boi = new poly(position, speed, acceleration, mass,points)
     var boi1 = new poly(position, speed, acceleration, mass,points1)
 
-    polygonCollision(boi, boi1);
+    console.log(polygonCollision(boi, boi1));
 
   </script>
 </body>
