@@ -37,30 +37,53 @@
       addDispByFrame(){ //Will be called every cycle to change displacement based on speed
         this.speed.divi(60);
         this.position.add(this.speed);//speed stored in m/s so divided by 60 for 60fps
-        this.speed.mult(60);
+        this.speed.mult(60);//set back to original value
       }
       addSpeedByFrame(){
         this.acceleration.divi(60);
-        this.speed.add(this.acceleration);//speed stored in m/s so divided by 60 for 60fps
-        this.acceleration.mult(60);
+        this.speed.add(this.acceleration);//acceleration stored in m/s so divided by 60 for 60fps
+        this.acceleration.mult(60);//set back to original value
       }
     }
 
-    class circle extends ob{
+    class circle extends ob{ //circle is a subclass of ob
       constructor(position, speed, acceleration, mass,radius){
         super(position, speed, acceleration, mass);
         this.radius = radius
       }
     }
 
+    class AABB extends ob{ //AABB is a subclass of ob
+      constructor(position, speed, acceleration, mass, min, max){
+        super(position, speed, acceleration, mass);
+        this.min = min; //Stored as vector, represents top left of AABB
+        this.max = max; //Stored as vector, represents bottom right of ABB
+      }
+    }
+
+    class poly extends ob{
+      constructor(position, speed, acceleration, mass, points){
+        super(position, speed, acceleration, mass);
+        this.points = points;
+      }
+    }
+
+    function polygonCollision(ob1, ob2){
+
+
+    }
+    //used for testing v
     var position = new vec(0,0);
     var speed = new vec(10, 0);
     var acceleration = new vec(0,0);
     var mass = 10;
+    var points = [{x:0,y:0},{x:0,y:5},{x:5,y:5},{x:5,y:0}];
+    var points1 = [{x:5,y:0},{x:5,y:5},{x:10,y:0},{x:10,y:5}];
 
-    var boi = new circle(position, speed, acceleration, mass,20);
-    console.log(boi.position, boi.radius);
+    var boi = new poly(position, speed, acceleration, mass,points)
+    var boi1 = new poly(position, speed, acceleration, mass,points1)
 
+    polygonCollision(boi, boi1);
 
   </script>
 </body>
