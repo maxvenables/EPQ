@@ -29,11 +29,12 @@
       }
     }
     class ob { //Setting up basic object class which other rigid bodies will extend from
-      constructor(position, speed, acceleration, mass){
+      constructor(position, speed, acceleration, mass, restitution){
         this.position = position; //stored as vector
         this.speed = speed; //stored as vector
         this.acceleration = acceleration; //stored as vector
         this.mass = mass; //stored as scalar
+        this.restitution = restitution; //bouncyness factor
       }
       addDispByFrame(){ //Will be called every cycle to change displacement based on speed
         this.speed.divi(60);
@@ -48,29 +49,29 @@
     }
 
     class circle extends ob{ //circle is a subclass of ob
-      constructor(position, speed, acceleration, mass,radius){
-        super(position, speed, acceleration, mass);
+      constructor(position, speed, acceleration, mass,restitution,radius){
+        super(position, speed, acceleration, mass, restitution);
         this.radius = radius
       }
     }
 
     class AABB extends ob{ //AABB is a subclass of ob
-      constructor(position, speed, acceleration, mass, min, max){
-        super(position, speed, acceleration, mass);
+      constructor(position, speed, acceleration, mass, restitution, min, max){
+        super(position, speed, acceleration, mass, restitution);
         this.min = min; //Stored as vector, represents top left of AABB
         this.max = max; //Stored as vector, represents bottom right of ABB
       }
     }
 
     class poly extends ob{
-      constructor(position, speed, acceleration, mass, points){
-        super(position, speed, acceleration, mass);
+      constructor(position, speed, acceleration, mass, restitution, points){
+        super(position, speed, acceleration, mass, restitution);
         this.points = points;
       }
     }
 
     function polygonCollision(ob1, ob2){
-      //code copied and adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] starts here
+      //code copied AND adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] starts here
       var a = ob1.points;
       var b = ob2.points;
       var polygons = [a,b];
@@ -92,7 +93,7 @@
               // find the normalised line perpendicular to this edge
               len1 = p2.y - p1.y
               len2 = p1.x - p2.x
-              sumsquare = len1**2 + len2**2
+              sumsquare = len1**2 + len2**2 //doing this according to advice from http://www.dyn4j.org/2010/01/sat/
               sqroot = sumsquare**0.5
               var normal = { x: len1/sqroot, y: len2/sqroot };
 
@@ -143,7 +144,7 @@
               }
               }
           }
-      console.log("polygons intersect!");
+      //console.log("polygons intersect!");
       var returnlist = [true, minIntersection, intersectionNormal];
       return returnlist;
       //code copied and adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] ends here
@@ -151,11 +152,28 @@
     }
 
     function resolvePolygon(ob1, ob2, returnlist){
-      console.log(ob1.speed)
-      console.log(ob2.speed)
+      //console.log(ob1.speed)
+      //console.log(ob2.speed)
+      minIntersection = returnlist[1];
+      intersectionNormal = returnlist[2];
+      var normal = new vec(intersectionNormal.x, intersectionNormal.y);
 
+      normal.mult(minIntersection)
+      obj = undefined;
+      if (ob1.restitution < ob2.restitution){
+        obj = ob1;
+        normal.mult(-1)
+      }
+      else{
+        obj = ob2;
+      }
 
-      oldvelx1 = ob1.speed.x;
+      for (var i = 0; i < obj.points.length; i++){
+        obj.points[i].x += normal.x;
+        obj.points[i].y += normal.y;
+      }
+
+      oldvelx1 = ob1.speed.x; //preventing passing by reference annoyance
       oldvely1 = ob1.speed.y;
       oldvelx2 = ob2.speed.x;
       oldvely2 = ob2.speed.y;
@@ -163,6 +181,7 @@
 
 
 //console.log(oldvelx2, oldvely2);
+      //method taken from https://gamedev.stackexchange.com/questions/48587/resolving-a-collision-with-forces
       ob1.speed.x = ((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       ob1.speed.y = ((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       ob2.speed.x = ((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
@@ -177,22 +196,21 @@
     // }
     //used for testing v
     var position = new vec(0,0);
-    var speed = new vec(6, 6);
-    var speed1 = new vec((-6), (-6));
-    console.log(speed1.x, speed1.y)
+    var speed = new vec(0, 0);
+    var speed1 = new vec((0), (0));
+    //console.log(speed1.x, speed1.y)
     var acceleration = new vec(0,0);
     var mass = 10;
     var points = [{x:0,y:0},{x:0,y:5},{x:5,y:5},{x:5,y:0}];
-    var points1 = [{x:1,y:1},{x:1,y:2},{x:2,y:2},{x:2,y:1}];
+    var points1 = [{x:4,y:0},{x:4,y:5},{x:10,y:5},{x:10,y:0}];
 
-    var boi = new poly(position, speed, acceleration, mass,points)
-    var boi1 = new poly(position, speed1, acceleration, mass,points1)
+    var poly1 = new poly(position, speed, acceleration, mass, 7, points)
+    var poly2 = new poly(position, speed1, acceleration, mass, 6,points1)
+    //console.log(polygonCollision(poly1, poly2));
+    resolvePolygon(poly1, poly2, polygonCollision(poly1, poly2));
+    console.log(poly1.points);
+    console.log(poly2.points);
 
-    resolvePolygon(boi, boi1, []);
-    console.log(boi.speed);
-    console.log(boi1.speed);
-
-    //console.log(polygonCollision(boi, boi1));
 
   </script>
 </body>
