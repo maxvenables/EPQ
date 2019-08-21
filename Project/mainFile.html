@@ -23,6 +23,7 @@
         this.x /= scalar;
         this.y /= scalar;
       }
+
       dotproduct(vec2){
         return this.x*vec2.x + this.y*vec2.y;
       }
@@ -125,7 +126,7 @@
               // polygons, and we know there is no overlap
               if (maxA < minB || maxB < minA) {
                   console.log("polygons don't intersect!");
-                  return false;
+                  return [false];
               }
               else{
                 if ((maxA - minB) < minIntersection){
@@ -149,22 +150,49 @@
 
     }
 
+    function resolvePolygon(ob1, ob2, returnlist){
+      console.log(ob1.speed)
+      console.log(ob2.speed)
+
+
+      oldvelx1 = ob1.speed.x;
+      oldvely1 = ob1.speed.y;
+      oldvelx2 = ob2.speed.x;
+      oldvely2 = ob2.speed.y;
+
+
+
+//console.log(oldvelx2, oldvely2);
+      ob1.speed.x = ((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
+      ob1.speed.y = ((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
+      ob2.speed.x = ((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
+      ob2.speed.y = ((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
+      //console.log(oldvelx1, oldvely1);
+
+    }
+
     // function fisqrt(num){
     //   //algorithm that efficiently finds the inverse quare root of a number
     //
     // }
     //used for testing v
     var position = new vec(0,0);
-    var speed = new vec(10, 0);
+    var speed = new vec(6, 6);
+    var speed1 = new vec((-6), (-6));
+    console.log(speed1.x, speed1.y)
     var acceleration = new vec(0,0);
     var mass = 10;
     var points = [{x:0,y:0},{x:0,y:5},{x:5,y:5},{x:5,y:0}];
     var points1 = [{x:1,y:1},{x:1,y:2},{x:2,y:2},{x:2,y:1}];
 
     var boi = new poly(position, speed, acceleration, mass,points)
-    var boi1 = new poly(position, speed, acceleration, mass,points1)
+    var boi1 = new poly(position, speed1, acceleration, mass,points1)
 
-    console.log(polygonCollision(boi, boi1));
+    resolvePolygon(boi, boi1, []);
+    console.log(boi.speed);
+    console.log(boi1.speed);
+
+    //console.log(polygonCollision(boi, boi1));
 
   </script>
 </body>
