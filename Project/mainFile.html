@@ -11,17 +11,33 @@
         this.x += vec2.x;
         this.y += vec2.y;
       }
+      add1(vec2){
+        var vec3 = new vec(this.x + vec2.x, this.y + vec2.x);
+        return vec3
+      }
       sub(vec2){
         this.x -= vec2.x;
         this.y -= vec2.y;
+      }
+      sub1(vec2){
+        var vec3 = new vec(this.x - vec2.x, this.y - vec2.x);
+        return vec3
       }
       mult(scalar){
         this.x *= scalar;
         this.y *= scalar;
       }
+      mult1(scalar){
+        var vec3 = new vec(this.x * scalar, this.y * scalar);
+        return vec3
+      }
       divi(scalar){
         this.x /= scalar;
         this.y /= scalar;
+      }
+      divi1(scalar){
+        var vec3 = new vec(this.x * scalar, this.y * scalar);
+        return vec3
       }
 
       dotproduct(vec2){
@@ -67,6 +83,13 @@
       constructor(position, speed, acceleration, mass, restitution, points){
         super(position, speed, acceleration, mass, restitution);
         this.points = points;
+        this.radius = 0;
+        var disp = 0;
+        for (var i = 0; i < points.length; i++){
+          disp = ((position.x - points[i].x)^2 +(position.y - points[i].y^2))^0.5;
+          this.radius += disp;
+        }
+        this.radius /= points.length;
       }
     }
 
@@ -126,7 +149,7 @@
               // if there is no overlap between the projects, the edge we are looking at separates the two
               // polygons, and we know there is no overlap
               if (maxA < minB || maxB < minA) {
-                  console.log("polygons don't intersect!");
+                  //console.log("polygons don't intersect!");
                   return [false];
               }
               else{
@@ -190,26 +213,103 @@
 
     }
 
-    // function fisqrt(num){
-    //   //algorithm that efficiently finds the inverse quare root of a number
-    //
-    // }
+    function normalGravity(objectList){
+      for (var i = 0; i < objectList.length; i++){
+        objectList.acceleration.y = -9.8;
+      }
+    }
+
+    function alternativeGravity(objectList){
+      var x = 1;
+      var g = (0.000000000066726)
+      for (var i = 0; i < objectList.length; i++){
+        for (var j = x; j < objectList.length; j++){
+        ob1 = objectList[i];
+        ob2 = objectList[j];
+        var direction = ob2.position.sub1(ob1.position);
+        // console.log(ob2.position);
+        // console.log(ob1.position)
+        // console.log(direction);
+        //return;
+        var absol = (direction.x^2 + direction.y^2)^0.5;
+        direction.divi(absol);
+        var direction1 = new vec(direction.x, direction.y);
+        var direction2 = new vec(direction.x, direction.y)
+        var accel1 = direction1.mult1(g*((ob2.mass)/(absol**2)));
+        //console.log(g*((ob2.mass*ob1.mass)/(absol**2)));
+        var accel2 = direction2.mult1(g*((ob1.mass)/(absol**2)));
+
+        ob1.acceleration.add(accel1);
+        ob2.acceleration.add(accel2);
+
+        //console.log(ob1.acceleration);
+        //console.log(ob2.acceleration);
+
+
+        }
+      x++;
+      }
+    }
+
+    function startloop(canvas, ctx, objectList){
+      var intervalID = setInterval( function() {loop(canvas, ctx, objectList, intervalID);}, 1000/60);
+    }
+
+    function loop(canvas, ctx, objectList, intervalID){
+      console.log("sup");
+      for (var i = 0; i <objectList.length; i++){
+        objectList[i].acceleration.mult(0);
+
+      var x = 1;
+      for (var i = 0; i < objectList.length; i++){
+        for (var j = x; j < objectList.length; j++){
+          ob1 = objectList[i];
+          ob2 = objectList[j];
+          collided = polygonCollision(ob1, ob2);
+          if (collided[0] === true){
+            resolvePolygon(ob1, ob2, collided);
+          }
+        }
+        x++;
+      }
+      alternativeGravity(objectList);
+      for (var i = 0; i <objectList.length; i++){
+        objectList[i].addSpeedByFrame;
+        objectList[i].addDispByFrame;
+
+      }
+    }
+  }
+    var canvas = document.createElement("Canvas")
+    canvas.width = 1200;
+    canvas.height = 1200;
+    canvas.style = "border:1px solid #000000";
+    canvas.style = "position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px; margin: auto; border:2px solid black";
+    var ctx = canvas.getContext("2d");
+    document.body.appendChild(canvas);
+
     //used for testing v
     var position = new vec(0,0);
+    var position1 = new vec(0, 6378100)
     var speed = new vec(0, 0);
     var speed1 = new vec((0), (0));
     //console.log(speed1.x, speed1.y)
     var acceleration = new vec(0,0);
+    var acceleration1 = new vec(0,0);
     var mass = 10;
     var points = [{x:0,y:0},{x:0,y:5},{x:5,y:5},{x:5,y:0}];
     var points1 = [{x:4,y:0},{x:4,y:5},{x:10,y:5},{x:10,y:0}];
 
-    var poly1 = new poly(position, speed, acceleration, mass, 7, points)
-    var poly2 = new poly(position, speed1, acceleration, mass, 6,points1)
+    var poly1 = new poly(position, speed, acceleration, 80, 7, points)
+    var poly2 = new poly(position1, speed1, acceleration1, 5972000000000000000000000, 10000,points1)
     //console.log(polygonCollision(poly1, poly2));
-    resolvePolygon(poly1, poly2, polygonCollision(poly1, poly2));
-    console.log(poly1.points);
-    console.log(poly2.points);
+    var oblist = [poly1, poly2];
+    startloop(canvas, ctx, oblist);
+
+
+    //resolvePolygon(poly1, poly2, polygonCollision(poly1, poly2));
+    //console.log(poly1.points);
+    //console.log(poly2.points);
 
 
   </script>
