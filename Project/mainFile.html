@@ -189,7 +189,7 @@
       //console.log(ob2.speed)
       minIntersection = returnlist[1];
       intersectionNormal = returnlist[2];
-      console.log(intersectionNormal)
+      //console.log(intersectionNormal)
       var normal = new vec(intersectionNormal.x, intersectionNormal.y);
 
       normal.mult(minIntersection)
@@ -233,9 +233,12 @@
 
     function alternativeGravity(objectList){
       var x = 1;
+
+
       var g = (0.000000000066726)
       for (var i = 0; i < objectList.length; i++){
         for (var j = x; j < objectList.length; j++){
+          if (i != j){
         ob1 = objectList[i];
         ob2 = objectList[j];
         var direction = ob2.position.sub1(ob1.position);
@@ -245,13 +248,38 @@
         //return;
         var absol = (direction.x**2 + direction.y**2)**0.5;
         direction.divi(absol);
-        var direction1 = new vec(-direction.x, -direction.y);
-        var direction2 = new vec(direction.x, direction.y)
+        var a = 1;
+        var b = 1;
+        var c = 1;
+        var d = 1;
+        if ((ob1.position.x < ob2.position.x) && (ob1.position.y < ob2.position.y)){
+          console.log("1")
+         c = -1;
+          d = -1;
+        }
+        if ((ob1.position.x > ob2.position.x) && (ob1.position.y > ob2.position.y)){
+          console.log("2")
+        a = -1;
+        b = -1;
+        }
+        if ((ob1.position.x > ob2.position.x) && (ob1.position.y < ob2.position.y)){
+          console.log("3")
+        c  = -1;
+        d = -1;
+      }
+        if ((ob1.position.x < ob2.position.x) && (ob1.position.y > ob2.position.y)){
+          console.log("4")
+      a = -1;
+      b = -1;
+      }
+        var direction1 = new vec(a*direction.x,b*direction.y);
+        var direction2 = new vec(c*direction.x,d*direction.y)
         var accel1 = direction1.mult1(g*((ob2.mass)/(absol**2)));
         //console.log(g*((ob2.mass*ob1.mass)/(absol**2)));
         var accel2 = direction2.mult1(g*((ob1.mass)/(absol**2)));
         ob1.acceleration.add(accel1);
         ob2.acceleration.add(accel2);
+      }
 
         //console.log(ob1.acceleration);
         //console.log(ob2.acceleration);
@@ -289,7 +317,7 @@
         x++;
       }
       objectList = alternativeGravity(objectList);
-      console.log(objectList[0].acceleration)
+      //console.log(objectList[0].acceleration)
       for (var i = 0; i <objectList.length; i++){
         objectList[i].addSpeedByFrame();
         objectList[i].addDispByFrame();
@@ -319,9 +347,9 @@
     document.body.appendChild(canvas);
 
     //used for testing v
-    var position = new vec(5,5);
+    var position = new vec(255,255);
     //var position1 = new vec(0, 6378100)
-    var position1 = new vec(85,85)
+    var position1 = new vec(270,270)
     var speed = new vec(0, 0);
     var speed1 = new vec((0), (0));
     //console.log(speed1.x, speed1.y)
@@ -329,9 +357,9 @@
     var acceleration1 = new vec(0,0);
     var mass = 10;
     var points = [{x:250,y:250},{x:250,y:260},{x:260,y:260},{x:260,y:250}];
-    var points1 = [{x:280,y:250},{x:280,y:260},{x:290,y:260},{x:290,y:250}];
+    var points1 = [{x:220,y:220},{x:220,y:330},{x:330,y:330},{x:330,y:220}];
 
-    var poly1 = new poly(position, speed, acceleration, 600000000000000, 7, points)
+    var poly1 = new poly(position, speed, acceleration, 600000, 7, points)
     //var poly2 = new poly(position1, speed1, acceleration1, 5972000000000000000000000, 10000,points1)
     var poly2 = new poly(position1, speed1, acceleration1, 600000000000000, 6, points1)
 
