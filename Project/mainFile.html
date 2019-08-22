@@ -86,7 +86,7 @@
         this.radius = 0;
         var disp = 0;
         for (var i = 0; i < points.length; i++){
-          disp = ((position.x - points[i].x)^2 +(position.y - points[i].y^2))^0.5;
+          disp = ((position.x - points[i].x)**2 +(position.y - points[i].y**2))**0.5;
           this.radius += disp;
         }
         this.radius /= points.length;
@@ -162,6 +162,7 @@
                   return [false];
               }
               else{
+                //console.log("yeet")
                 if ((maxA - minB) < minIntersection){
                   minIntersection = maxA - minB;
                   intersectionNormal = normal;
@@ -188,6 +189,7 @@
       //console.log(ob2.speed)
       minIntersection = returnlist[1];
       intersectionNormal = returnlist[2];
+      console.log(intersectionNormal)
       var normal = new vec(intersectionNormal.x, intersectionNormal.y);
 
       normal.mult(minIntersection)
@@ -241,14 +243,13 @@
         // console.log(ob1.position)
         // console.log(direction);
         //return;
-        var absol = (direction.x^2 + direction.y^2)^0.5;
+        var absol = (direction.x**2 + direction.y**2)**0.5;
         direction.divi(absol);
         var direction1 = new vec(direction.x, direction.y);
         var direction2 = new vec(direction.x, direction.y)
         var accel1 = direction1.mult1(g*((ob2.mass)/(absol**2)));
         //console.log(g*((ob2.mass*ob1.mass)/(absol**2)));
-        var accel2 = direction2.mult1(g*((ob1.mass)/(absol**2)));
-
+        var accel2 = direction2.mult1((-1)*g*((ob1.mass)/(absol**2)));
         ob1.acceleration.add(accel1);
         ob2.acceleration.add(accel2);
 
@@ -280,19 +281,21 @@
           ob1 = objectList[i];
           ob2 = objectList[j];
           collided = polygonCollision(ob1, ob2);
+          //console.log(collided);
           if (collided[0] === true){
             resolvePolygon(ob1, ob2, collided);
           }
         }
         x++;
       }
-      objectList = normalGravity(objectList);
+      objectList = alternativeGravity(objectList);
+      console.log(objectList[0].acceleration)
       for (var i = 0; i <objectList.length; i++){
         objectList[i].addSpeedByFrame();
         objectList[i].addDispByFrame();
-        console.log(objectList[i].position);
-        console.log(objectList[i].speed);
-        console.log(objectList[i].acceleration);
+        // console.log(objectList[i].position);
+        // console.log(objectList[i].speed);
+        // console.log(objectList[i].acceleration);
       }
       ctx.beginPath();
       for (var i = 0; i < objectList.length; i++){
@@ -326,15 +329,20 @@
     var acceleration1 = new vec(0,0);
     var mass = 10;
     var points = [{x:10,y:10},{x:10,y:20},{x:20,y:20},{x:20,y:10}];
-    var points1 = [{x:20,y:20},{x:20,y:30},{x:30,y:30},{x:30,y:20}];
+    var points1 = [{x:80,y:80},{x:80,y:90},{x:90,y:90},{x:90,y:80}];
 
-    var poly1 = new poly(position, speed, acceleration, 80, 7, points)
+    var poly1 = new poly(position, speed, acceleration, 60000000000000000, 7, points)
     //var poly2 = new poly(position1, speed1, acceleration1, 5972000000000000000000000, 10000,points1)
-    var poly2 = new poly(position1, speed1, acceleration1, 60, 6, points1)
+    var poly2 = new poly(position1, speed1, acceleration1, 60000000000000000, 6, points1)
 
     //console.log(polygonCollision(poly1, poly2));
     var oblist = [poly1, poly2];
     startloop(canvas, ctx, oblist);
+    //polygonCollision(poly1, poly2);
+    //alternativeGravity([poly1, poly2])
+    // console.log(poly1.position);
+    // console.log(poly1.speed);
+    // console.log(poly1.acceleration);
 
 
     //resolvePolygon(poly1, poly2, polygonCollision(poly1, poly2));
