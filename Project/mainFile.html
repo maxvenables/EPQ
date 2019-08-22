@@ -245,11 +245,11 @@
         //return;
         var absol = (direction.x**2 + direction.y**2)**0.5;
         direction.divi(absol);
-        var direction1 = new vec(direction.x, direction.y);
+        var direction1 = new vec(-direction.x, -direction.y);
         var direction2 = new vec(direction.x, direction.y)
         var accel1 = direction1.mult1(g*((ob2.mass)/(absol**2)));
         //console.log(g*((ob2.mass*ob1.mass)/(absol**2)));
-        var accel2 = direction2.mult1((-1)*g*((ob1.mass)/(absol**2)));
+        var accel2 = direction2.mult1(g*((ob1.mass)/(absol**2)));
         ob1.acceleration.add(accel1);
         ob2.acceleration.add(accel2);
 
@@ -293,7 +293,7 @@
       for (var i = 0; i <objectList.length; i++){
         objectList[i].addSpeedByFrame();
         objectList[i].addDispByFrame();
-        // console.log(objectList[i].position);
+        console.log(objectList[i].position);
         // console.log(objectList[i].speed);
         // console.log(objectList[i].acceleration);
       }
@@ -319,21 +319,21 @@
     document.body.appendChild(canvas);
 
     //used for testing v
-    var position = new vec(50,50);
+    var position = new vec(5,5);
     //var position1 = new vec(0, 6378100)
-    var position1 = new vec(250,250)
+    var position1 = new vec(85,85)
     var speed = new vec(0, 0);
     var speed1 = new vec((0), (0));
     //console.log(speed1.x, speed1.y)
     var acceleration = new vec(0,0);
     var acceleration1 = new vec(0,0);
     var mass = 10;
-    var points = [{x:10,y:10},{x:10,y:20},{x:20,y:20},{x:20,y:10}];
-    var points1 = [{x:80,y:80},{x:80,y:90},{x:90,y:90},{x:90,y:80}];
+    var points = [{x:250,y:250},{x:250,y:260},{x:260,y:260},{x:260,y:250}];
+    var points1 = [{x:280,y:250},{x:280,y:260},{x:290,y:260},{x:290,y:250}];
 
-    var poly1 = new poly(position, speed, acceleration, 60000000000000000, 7, points)
+    var poly1 = new poly(position, speed, acceleration, 600000000000000, 7, points)
     //var poly2 = new poly(position1, speed1, acceleration1, 5972000000000000000000000, 10000,points1)
-    var poly2 = new poly(position1, speed1, acceleration1, 60000000000000000, 6, points1)
+    var poly2 = new poly(position1, speed1, acceleration1, 600000000000000, 6, points1)
 
     //console.log(polygonCollision(poly1, poly2));
     var oblist = [poly1, poly2];
