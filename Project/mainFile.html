@@ -20,7 +20,7 @@
         this.y -= vec2.y;
       }
       sub1(vec2){
-        var vec3 = new vec(this.x - vec2.x, this.y - vec2.x);
+        var vec3 = new vec(this.x - vec2.x, this.y - vec2.y);
         return vec3
       }
       mult(scalar){
@@ -53,14 +53,14 @@
         this.restitution = restitution; //bouncyness factor
       }
       addDispByFrame(){ //Will be called every cycle to change displacement based on speed
-        this.speed.divi(60);
+        this.speed.divi(1/3600);
         this.position.add(this.speed);//speed stored in m/s so divided by 60 for 60fps
-        this.speed.mult(60);//set back to original value
+        this.speed.mult(1/3600);//set back to original value
       }
       addSpeedByFrame(){
-        this.acceleration.divi(60);
+        this.acceleration.divi(1/3600);
         this.speed.add(this.acceleration);//acceleration stored in m/s so divided by 60 for 60fps
-        this.acceleration.mult(60);//set back to original value
+        this.acceleration.mult(1/3600);//set back to original value
       }
     }
 
@@ -92,13 +92,13 @@
         this.radius /= points.length;
       }
       addDispByFrame(){ //Will be called every cycle to change displacement based on speed
-        this.speed.divi(60);
+        this.speed.divi(1/3600);
         this.position.add(this.speed);//speed stored in m/s so divided by 60 for 60fps
         for (var i = 0; i < this.points.length; i++){
           this.points[i].x += this.speed.x;
           this.points[i].y += this.speed.y;
         }
-        this.speed.mult(60);
+        this.speed.mult(1/3600);
       }
     }
 
@@ -246,12 +246,12 @@
           if (i != j){
         ob1 = objectList[i];
         ob2 = objectList[j];
-        //var direction = ob2.position.sub1(ob1.position);
+        var direction = ob2.position.sub1(ob1.position);
         // console.log(ob2.position);
         // console.log(ob1.position)
         // console.log(direction);
         //return;
-        var direction = new vec(ob2.position.x - ob1.position.x,ob2.position.y - ob1.position.y);
+        //var direction = new vec(ob2.position.x - ob1.position.x,ob2.position.y - ob1.position.y);
         console.log(direction);
         var absol = (direction.x**2 + direction.y**2)**0.5;
         direction.divi(absol);
@@ -341,7 +341,7 @@
         // console.log(objectList[i].acceleration);
       }
 
-      var scale = 100;
+      var scale = 1600000;
       ctx.beginPath();
       for (var i = 0; i < objectList.length; i++){
         ctx.moveTo(objectList[i].points[0].x/scale,objectList[i].points[0].y/scale);
@@ -364,31 +364,33 @@
     document.body.appendChild(canvas);
 
     //used for testing v
-    var position = new vec(25500,25500);
+    var position1 = new vec(15600000,400000000);
+    var position = new vec(400000000,400000000);
     //var position = new vec(25000,6371000);
-    //var position1 = new vec(0, 6378100)
-    var position1 = new vec(22500,25500)
+    //var position1 = new vec(0, 6378100)//8000000
+    //var position1 = new vec(22500,25500)
     //var position1 = new vec(285,285)
     //var position1 = new vec(225,285)
     //var position1 = new vec(285,225)
     var speed = new vec(0, 0);
-    var speed1 = new vec(0,0);
+    var speed1 = new vec(0, 1023);
     //console.log(speed1.x, speed1.y)
     var acceleration = new vec(0,0);
     var acceleration1 = new vec(0,0);
     var mass = 10;
-    var points = [{x:25000,y:25000},{x:25000,y:26000},{x:26000,y:26000},{x:26000,y:25000}];
+    //var points = [{x:25000,y:25000},{x:25000,y:26000},{x:26000,y:26000},{x:26000,y:25000}];
     //var points = [{x:0,y:50000},{x:0,y:30000},{x:50000,y:30000},{x:50000,y:50000}];
+    var points = [{x:392000000,y:392000000},{x:408000000,y:392000000},{x:408000000,y:408000000},{x:392000000,y:408000000}];
 
-    var points1 = [{x:22000,y:25000},{x:22000,y:26000},{x:23000,y:26000},{x:23000,y:25000}];
+    var points1 = [{x:148000000,y:392000000},{x:164000000,y:392000000},{x:164000000,y:408000000},{x:148000000,y:408000000}];
     //var points1 = [{x:280,y:280},{x:280,y:290},{x:290,y:290},{x:290,y:280}];
     //var points1 = [{x:220,y:280},{x:220,y:290},{x:230,y:290},{x:230,y:280}];
     //var points1 = [{x:280,y:220},{x:280,y:230},{x:290,y:230},{x:290,y:220}];
 
 
-    var poly1 = new poly(position, speed, acceleration, 60000000000000000000, 7, points)
+    var poly1 = new poly(position, speed, acceleration, 5972000000000000000000000, 7, points)
     //var poly2 = new poly(position1, speed1, acceleration1, 5972000000000000000000000, 10000,points1)
-    var poly2 = new poly(position1, speed1, acceleration1, 60000000000000000000, 6, points1)
+    var poly2 = new poly(position1, speed1, acceleration1, 73470000000000000000000, 6, points1)
 
     //console.log(polygonCollision(poly1, poly2));
     var oblist = [poly1, poly2];
