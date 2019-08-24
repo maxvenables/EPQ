@@ -67,7 +67,8 @@
     class circle extends ob{ //circle is a subclass of ob
       constructor(position, speed, acceleration, mass,restitution,radius){
         super(position, speed, acceleration, mass, restitution);
-        this.radius = radius
+        this.radius = radius;
+        this.name = "circle";
       }
     }
 
@@ -84,6 +85,7 @@
         super(position, speed, acceleration, mass, restitution);
         this.points = points;
         this.radius = 0;
+        this.name = "poly";
         var disp = 0;
         for (var i = 0; i < points.length; i++){
           disp = ((position.x - points[i].x)**2 +(position.y - points[i].y**2))**0.5;
@@ -104,6 +106,8 @@
 
     function polygonCollision(ob1, ob2){
       //code copied AND adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] starts here
+      console.log(ob1.name, ob2.name)
+
       var a = ob1.points;
       var b = ob2.points;
       var polygons = [a,b];
@@ -184,6 +188,88 @@
 
     }
 
+    function circleCollision(ob1,ob2){
+      var direction = ob1.position.sub1(ob2.position);
+      var distance = (direction.x**2 + direction.y**2)**0.5
+      if (distance < ob1.radius + ob2.radius){
+        direcetion.divi(distance);
+        return [true, distance, direction];
+      }
+      else{
+        return [false];
+      }
+    }
+
+    function polygonCircleCollision(ob1, ob2){
+      var a;
+      if (ob1.name === "poly"){
+        a = ob1.points;
+        b = ob2;
+      }
+      else{
+        a = ob2.points;
+        b = ob1
+      }
+      var direction = new vec(0,0);
+      var nearestVertex = undefined;
+      var smallestDistance = Infinity;
+      for (var i = 0; i < a.length; i++){
+        direction.x = a[i].x - b.position.x;
+        direction.y = a[i].y - b.position.y;
+        distance = (direction.x**2 + direction.y**2)**0.5;
+        console.log(direction)
+        if (distance < smallestDistance){
+          smallestDistance = distance;
+          console.log(i);
+          nearestVertex = i;
+        }
+      }
+      console.log(nearestVertex)
+      var vert = a[nearestVertex];
+      var vert1 = a[(nearestVertex - 1)%a.length];
+      var vert2 = a[(nearestVertex + 1)%a.length];
+      var verts = [vert1, vert2]
+      var realx = undefined;
+      var realy = undefined;
+
+      for (var i = 0; i < 2; i++){
+        var avert = verts[i]
+        console.log(b.position.y);
+        console.log(vert.y);
+        console.log(avert.y);
+        var lineLength = (((avert.x-vert.x)**2+(avert.y-vert.y)**2)**0.5);
+        var dotproduct = (((b.position.x-vert.x)*(avert.x - vert.x)) + ((b.position.y-vert.y)*(avert.y - vert.y))) / (lineLength**2);
+        var closestX = vert.x + (dotproduct * (avert.x-vert.x));
+        var closestY = vert.y + (dotproduct * (avert.y-vert.y));
+        if ((((closestX > vert.x && closestX < avert.x) || (closestX < vert.x && closestX > avert.x)) && ((closestY > vert.y && closestY < avert.y) || (closestY < vert.y && closestY > avert.y))) === true){
+          realx = closestX;
+          realy = closestY;
+          var line = new vec(avert.x-vert.x, avert.y-vert.y);
+          line.divi(lineLength);
+          var normal = new vec(line.y, -line.x);
+
+        }
+        circDistance = ((b.position.x - realx)**2 + (b.position.y - realy)**2)**0.5
+        if (circDistance < b.radius){
+          console.log("yeet")
+          console.log("yeet")
+          console.log("yeet")
+          console.log("yeet")
+          console.log("yeet")
+          console.log("yeet")
+          console.log("yeet")
+          console.log("yeet")
+          return [true, circDistance - b.radius, normal];
+        }
+
+      }
+
+
+      return [false];
+
+
+    }
+
     function resolvePolygon(ob1, ob2, returnlist){
       //console.log(ob1.speed)
       //console.log(ob2.speed)
@@ -203,9 +289,12 @@
       }
       obj.position.x += normal.x;
       obj.position.y += normal.y;
-      for (var i = 0; i < obj.points.length; i++){
-        obj.points[i].x += normal.x;
-        obj.points[i].y += normal.y;
+      //console.log(obj)
+      if (obj.name === "poly"){
+        for (var i = 0; i < obj.points.length; i++){
+          obj.points[i].x += normal.x;
+          obj.points[i].y += normal.y;
+        }
       }
 
       oldvelx1 = ob1.speed.x; //preventing passing by reference annoyance
@@ -317,6 +406,7 @@
       //ctx.fillStyle = "#FFFFFF";
       //ctx.fillRect(0,0, canvas.width, canvas.height);
       for (var i = 0; i <objectList.length; i++){
+        //console.log(objectList[i]);
         objectList[i].acceleration.mult(0);
         //console.log(objectList[i].acceleration);
       }
@@ -325,11 +415,25 @@
         for (var j = x; j < objectList.length; j++){
           ob1 = objectList[i];
           ob2 = objectList[j];
-          collided = polygonCollision(ob1, ob2);
+          if (ob1.name === "poly" && ob2.name === "poly"){
+            //console.log(ob1, ob2);
+            //console.log("TEST");
+            collided = polygonCollision(ob1, ob2);
+          }
+          else if (ob1.name === "circle" && ob2.name === "circle"){
+            collided = circleCollision(ob1, ob2);
+          }
+          // else if ((ob1.name === "circle" && ob2.name === "poly")||(ob1.name === "poly" && ob2.name === "circle")){
+          //   //console.log("hello")
+          //   collided = polygonCircleCollision(ob1, ob2);
+          // }
+          else{
+            collided = [false]
+          }
           //console.log(collided);
           if (collided[0] === true){
-            resolvePolygon(ob1, ob2, collided);
-          }
+            resolvePolygon(ob1, ob2, collided);}
+
         }
         x++;
       }
@@ -347,12 +451,20 @@
 
       var scale = 1;
       ctx.beginPath();
+
       for (var i = 0; i < objectList.length; i++){
-        ctx.moveTo(objectList[i].points[0].x/scale,objectList[i].points[0].y/scale);
-        for (var j = 1; j < objectList[i].points.length + 1; j++){
-          ctx.lineTo(objectList[i].points[j % objectList[i].points.length].x/scale,objectList[i].points[j % objectList[i].points.length].y/scale);
+        if (objectList[i].name ==="poly"){
+          ctx.moveTo(objectList[i].points[0].x/scale,objectList[i].points[0].y/scale);
+          for (var j = 1; j < objectList[i].points.length + 1; j++){
+            ctx.lineTo(objectList[i].points[j % objectList[i].points.length].x/scale,objectList[i].points[j % objectList[i].points.length].y/scale);
+          }
+          ctx.stroke();
         }
-        ctx.stroke();
+        else if (objectList[i].name === "circle"){
+          ctx.moveTo(objectList[i].position.x,objectList[i].position.y)
+          ctx.arc(objectList[i].position.x,objectList[i].position.y,objectList[i].radius,0, 2 * Math.PI)
+          ctx.stroke();
+        }
 
       }
       //ctx.clearRect(0,0,canvas.width, canvas.height);
@@ -395,6 +507,16 @@
 
     }
 
+    function createCircle(positionx, positiony, speedx, speedy, accelerationx, accelerationy, mass,restitution,radius){
+      var position = createVector(positionx, positiony);
+      var speed = createVector(speedx, speedy);
+      var acceleration = createVector(accelerationx, accelerationy)
+      var circ = new circle(position, speed, acceleration, mass, restitution, radius)
+      console.log(circ)
+      return circ;
+    }
+
+
     var canvas = document.createElement("Canvas")
     canvas.width = 500;
     canvas.height = 500;
@@ -416,7 +538,7 @@
     //var position2 = new vec(285, 225)
     //var position1 = new vec(285,225)
     var speed = new vec(0, 0);
-    var speed1 = new vec(0, 0);
+    var speed1 = new vec(10, 0);
     var speed2 = new vec(0,0)
     //console.log(speed1.x, speed1.y)
     var acceleration = new vec(0,0);
@@ -444,9 +566,11 @@
     //var poly3 = new poly(position2, speed2, acceleration2, 60000000000000, 6, points3)
 
     //console.log(polygonCollision(poly1, poly2));
-    var poly3 = createPoly(2,2,0,0,0,0,50,4,"hexagon",20)
-    var oblist = [poly1, poly2,poly3];
+    var cir = createCircle(350,40,0,0,0,0,50,4,20)
+    var oblist = [poly1, poly2,cir];
+    console.log(cir.name)
     startloop(canvas, ctx, oblist);
+
     //polygonCollision(poly1, poly2);
     //alternativeGravity([poly1, poly2])
     // console.log(poly1.position);
