@@ -572,9 +572,9 @@
     //console.log(polygonCollision(poly1, poly2));
     var world = createCircle(250,6371000+200,0,0,0,0,5972000000000000000000000,100,)
     var poly2 = createPoly(220,40,0,0,0,0,80,4,"square",20)
-    var cir = createCircle(350,40,-80,0,0,0,50,4,20)
-    var cir1 = createCircle(285,40, -80,0,0,0,50,4,20)
-    var oblist = [poly1,poly2,cir,cir1];
+    var cir = createCircle(350,40,-40,0,0,0,50,4,20)
+    var cir1 = createCircle(285,40, 0,0,0,0,50,4,20)
+    var oblist = [poly1,cir,poly2];
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
 
