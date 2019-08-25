@@ -250,6 +250,7 @@
 
         }
         circDistance = ((b.position.x - realx)**2 + (b.position.y - realy)**2)**0.5
+        console.log(circDistance)
         if (circDistance < b.radius){
           console.log("yeet")
           console.log("yeet")
@@ -423,10 +424,10 @@
           else if (ob1.name === "circle" && ob2.name === "circle"){
             collided = circleCollision(ob1, ob2);
           }
-          // else if ((ob1.name === "circle" && ob2.name === "poly")||(ob1.name === "poly" && ob2.name === "circle")){
-          //   //console.log("hello")
-          //   collided = polygonCircleCollision(ob1, ob2);
-          // }
+          else if ((ob1.name === "circle" && ob2.name === "poly")||(ob1.name === "poly" && ob2.name === "circle")){
+            //console.log("hello")
+            collided = polygonCircleCollision(ob1, ob2);
+          }
           else{
             collided = [false]
           }
