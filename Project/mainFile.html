@@ -217,13 +217,20 @@
       var closestPointIndex = undefined;
       var currentDistanceSquared = 0;
       for (var i = 0; i < a.length; i++){
-        currentDistanceSquared = ((b.position.x - a[i].x)**2 + (b.position.x - a[i].x)**2);
+        currentDistanceSquared = ((b.position.x - a[i].x)**2 + (b.position.y - a[i].y)**2);
         if (currentDistanceSquared < shortestDistanceSquared){
           shortestDistanceSquared = currentDistanceSquared;
           closestPointIndex = i;
         }
       }
       var closestPoint = a[closestPointIndex];
+      var closestDirection = new vec(closestPoint.x, closestPoint.y);
+      closestDirection.sub(b.position);
+      var closestDistance = ((closestDirection.x)**2+(closestDirection.y)**2)**2
+      if (closestDistance < b.radius){
+        closestDirection.divi(-closestDistance)
+        return [true, b.radius - closestDistance, closestDirection];
+      }
       var nextClosest1 = a[(closestPointIndex + a.length - 1)%a.length];
       var nextClosest2 = a[(closestPointIndex + a.length + 1)%a.length];
       var norm1 = new vec(closestPoint.y - nextClosest1.y, -1*(closestPoint.x - nextClosest1.x));
@@ -237,16 +244,16 @@
 
       var distance1 = (Math.abs(((closestPoint.y - nextClosest1.y)*b.position.x)-((closestPoint.x - nextClosest1.x)*b.position.y)+(closestPoint.x*nextClosest1.y)-(closestPoint.y*nextClosest1.x)))/dist1;
       var distance2 = (Math.abs(((closestPoint.y - nextClosest2.y)*b.position.x)-((closestPoint.x - nextClosest2.x)*b.position.y)+(closestPoint.x*nextClosest2.y)-(closestPoint.y*nextClosest2.x)))/dist2;
-
+      //console.log(closestPoint)
 
 
       point1 = b.position.add1(norm1.mult1(-distance1));
       point2 = b.position.add1(norm2.mult1(-distance2));
       //console.log(norm1)
       //console.log(norm2)
-      console.log(point1)
+      //console.log(point1)
 
-      console.log(point2)
+      //console.log(point2)
       var norm = undefined;
       var distance = 0;
 
@@ -305,7 +312,7 @@
 
 //console.log(oldvelx2, oldvely2);
       //method taken from https://gamedev.stackexchange.com/questions/48587/resolving-a-collision-with-forces
-      var frictionFactor = 0.4;
+      var frictionFactor = 0.4;//determines what percent of energy is lost in a collision
 
       ob1.speed.x = frictionFactor*((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       ob1.speed.y = frictionFactor*((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
@@ -490,10 +497,10 @@
         points = [{x:-0.5,y:0.5},{x:-0.5,y:-0.5},{x:0.5,y:-0.5},{x:0.5,y:0.5},]
       }
       if (shape === "pentagon"){
-        points = [{x:-0.29389262614,y:0.5},{x:0.29389262614,y:0.5},{x:0.475528258141,y:0.059016994374},{x:0,y:-0.5},{x:-0.475528258141,y:0.059016994374}]
+        points = [{x:-0.475528258141,y:0.059016994374},{x:0,y:-0.5},{x:0.475528258141,y:0.059016994374},{x:0.29389262614,y:0.5},{x:-0.29389262614,y:0.5}];
       }
       if (shape === "hexagon"){
-        points = [{x:-0.288675134595,y:0.5},{x:0.288675134595,y:0.5},{x:0.57735026919,y:0},{x:0.288675134595,y:-0.5},{x:-0.288675134595,y:-0.5},{x:-0.57735026919,y:0}]
+        points = [{x:-0.288675134595,y:0.5},{x:-0.57735026919,y:0},{x:-0.288675134595,y:-0.5},{x:0.288675134595,y:-0.5},{x:0.57735026919,y:0},{x:0.288675134595,y:0.5},]
       }
 
 
@@ -571,10 +578,10 @@
 
     //console.log(polygonCollision(poly1, poly2));
     var world = createCircle(250,6371000+200,0,0,0,0,5972000000000000000000000,100,)
-    var poly2 = createPoly(220,40,0,0,0,0,80,4,"square",20)
-    var cir = createCircle(350,40,-40,0,0,0,50,4,20)
-    var cir1 = createCircle(285,40, 0,0,0,0,50,4,20)
-    var oblist = [poly1,cir,poly2];
+    var poly2 = createPoly(170,40,0,0,0,0,80,4,"pentagon",20)
+    var cir = createCircle(200,0,0,0,0,0,50,4,20)
+    var cir1 = createCircle(220,40, -50,0,0,0,50,4,20)
+    var oblist = [poly1,poly2, cir1];
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
 
