@@ -224,16 +224,21 @@
         }
       }
       var closestPoint = a[closestPointIndex];
-      var closestDirection = new vec(closestPoint.x, closestPoint.y);
-      closestDirection.sub(b.position);
-      var closestDistance = ((closestDirection.x)**2+(closestDirection.y)**2)**2
+      //console.log(b.position)
+
+      var clostestDirection = new vec(closestPoint.x - b.position.x, closestPoint.y - b.position.y)
+      var closestDistance = ((clostestDirection.x)**2+(clostestDirection.y)**2)**0.5
+      //console.log(closestDistance);
       if (closestDistance < b.radius){
-        closestDirection.divi(-closestDistance)
-        return [true, b.radius - closestDistance, closestDirection];
+        clostestDirection.divi(-closestDistance)
+        return [true, b.radius-closestDistance, clostestDirection]
       }
+
       var nextClosest1 = a[(closestPointIndex + a.length - 1)%a.length];
       var nextClosest2 = a[(closestPointIndex + a.length + 1)%a.length];
       var norm1 = new vec(closestPoint.y - nextClosest1.y, -1*(closestPoint.x - nextClosest1.x));
+      //var norm2 = new vec(closestPoint.y - nextClosest2.y, -1*(closestPoint.x - nextClosest2.x));
+
       var norm2 = new vec(nextClosest2.y - closestPoint.y, -1*(nextClosest2.x - closestPoint.x));
       var dist1 = ((norm1.x**2) + (norm1.y**2))**0.5
       var dist2 = ((norm2.x**2) + (norm2.y**2))**0.5
@@ -251,7 +256,7 @@
       point2 = b.position.add1(norm2.mult1(-distance2));
       //console.log(norm1)
       //console.log(norm2)
-      //console.log(point1)
+      //console.log(point2)
 
       //console.log(point2)
       var norm = undefined;
@@ -544,7 +549,7 @@
     var position = new vec(250,6371000);
     //var position1 = new vec(0, 6378100)//8000000
     //var position1 = new vec(22500,25500)
-    var position1 = new vec(285,40)
+    var position1 = new vec(285,80)
     //var position1 = new vec(225,285)
     //var position2 = new vec(285, 225)
     //var position1 = new vec(285,225)
@@ -562,26 +567,26 @@
     var points = [{x:0,y:500},{x:0,y:300},{x:500,y:300},{x:500,y:500}];
 
     //var points1 = [{x:7600000,y:392000000},{x:23600000,y:392000000},{x:23600000,y:408000000},{x:7600000,y:408000000}];
-    var points1 = [{x:280,y:45},{x:280,y:35},{x:290,y:35},{x:290,y:45}];
+    var points1 = [{x:275,y:90},{x:275,y:70},{x:295,y:70},{x:295,y:90}];
     //var points2 = [{x:220,y:280},{x:220,y:290},{x:230,y:290},{x:230,y:280}];
     //var points3 = [{x:280,y:220},{x:280,y:230},{x:290,y:230},{x:290,y:220}];
 
 
     //var poly1 = new poly(position, speed, acceleration, 5972000000000000000000000, 7, points)
     var poly1 = new poly(position, speed, acceleration, 5972000000000000000000000, 7, points)
-    var poly2 = new poly(position1, speed1, acceleration1, 80, 6, points1)
+    //var poly2 = new poly(position1, speed1, acceleration1, 80, 6, points1)
 
     //var poly1 = new poly(position, speed, acceleration,60000000000000, 7,points1)
     //var poly2 = new poly(position1, speed1, acceleration1, 73470000000000000000000, 6, points1)
-  //  var poly2 = new poly(position1, speed1, acceleration1, 60000000000000, 6, points2)
+    //var poly2 = new poly(position1, speed1, acceleration1, 60000000000000, 6, points2)
     //var poly3 = new poly(position2, speed2, acceleration2, 60000000000000, 6, points3)
 
     //console.log(polygonCollision(poly1, poly2));
-    var world = createCircle(250,6371000+200,0,0,0,0,5972000000000000000000000,100,)
-    var poly2 = createPoly(170,40,0,0,0,0,80,4,"pentagon",20)
+    var world = createPoly(250,(6371000)+300,0,0,0,0,5972000000000000000000000,100,"square",6371000*2)
+    var poly2 = createPoly(285,80,0,0,0,0,80,4,"hexagon",20)
     var cir = createCircle(200,0,0,0,0,0,50,4,20)
-    var cir1 = createCircle(220,40, -50,0,0,0,50,4,20)
-    var oblist = [poly1,poly2, cir1];
+    var cir1 = createCircle(340,40, 0,0,0,0,50,4,20)
+    var oblist = [world, cir1];
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
 
