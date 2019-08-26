@@ -100,8 +100,6 @@
 
     function polygonCollision(ob1, ob2){
       //code copied AND adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] starts here
-    //console.log(ob1.name, ob2.name)
-
       var a = ob1.points;
       var b = ob2.points;
       var polygons = [a,b];
@@ -156,11 +154,9 @@
               // if there is no overlap between the projects, the edge we are looking at separates the two
               // polygons, and we know there is no overlap
               if (maxA < minB || maxB < minA) {
-                  //console.log("polygons don't intersect!");
                   return [false];
               }
               else{
-                //console.log("yeet")
                 if ((maxA - minB) < minIntersection){ //checks for collision
                   minIntersection = maxA - minB;
                   intersectionNormal = normal;
@@ -175,7 +171,6 @@
               }
               }
           }
-    // //console.log("polygons intersect!");
       var returnlist = [true, minIntersection, intersectionNormal];
       return returnlist;
       //code copied AND adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] ends here
@@ -197,8 +192,6 @@
     function polygonCircleCollision(ob1, ob2){
       var a;
       var b;
-      //console.log(ob1);
-      //console.log(ob2);
       if (ob1.name === "poly"){ //makes variables same with different orders
         a = ob1.points;
         b = ob2;
@@ -218,13 +211,10 @@
         }
       }
       var closestPoint = a[closestPointIndex];
-      //console.log(b.position)
-
 
       //checks if closest point is within circle, if so collided
       var clostestDirection = new vec(closestPoint.x - b.position.x, closestPoint.y - b.position.y)
       var closestDistance = ((clostestDirection.x)**2+(clostestDirection.y)**2)**0.5
-      //console.log(closestDistance);
       if (closestDistance < b.radius){
         clostestDirection.divi(-closestDistance)
         return [true, b.radius-closestDistance, clostestDirection]
@@ -233,32 +223,23 @@
       var nextClosest1 = a[(closestPointIndex + a.length - 1)%a.length]; //finds two adjacent points to closest point
       var nextClosest2 = a[(closestPointIndex + a.length + 1)%a.length];
       var norm1 = new vec(closestPoint.y - nextClosest1.y, -1*(closestPoint.x - nextClosest1.x)); //finding normals of the lines between the closestPoint and the adjacent ones
-      //var norm2 = new vec(closestPoint.y - nextClosest2.y, -1*(closestPoint.x - nextClosest2.x));
 
       var norm2 = new vec(nextClosest2.y - closestPoint.y, -1*(nextClosest2.x - closestPoint.x));
       var dist1 = ((norm1.x**2) + (norm1.y**2))**0.5//finding length of edges
       var dist2 = ((norm2.x**2) + (norm2.y**2))**0.5
       norm1.divi(dist1);//getting unit vectors
       norm2.divi(dist2);
-      //console.log(closestPoint)
-      //console.log(nextClosest1)
 
       //calculate distance from circle centre to nearest point on those lines
       var distance1 = (Math.abs(((closestPoint.y - nextClosest1.y)*b.position.x)-((closestPoint.x - nextClosest1.x)*b.position.y)+(closestPoint.x*nextClosest1.y)-(closestPoint.y*nextClosest1.x)))/dist1;
       var distance2 = (Math.abs(((closestPoint.y - nextClosest2.y)*b.position.x)-((closestPoint.x - nextClosest2.x)*b.position.y)+(closestPoint.x*nextClosest2.y)-(closestPoint.y*nextClosest2.x)))/dist2;
-      //console.log(closestPoint)
 
       //finding actual closest point on line to circle centre
       point1 = b.position.add1(norm1.mult1(-distance1));
       point2 = b.position.add1(norm2.mult1(-distance2));
-      //console.log(norm1)
-      //console.log(norm2)
-      //console.log(point2)
-
-      //console.log(point2)
       var norm = undefined;
       var distance = 0;
-      //Checking wheter cloesest point is on line segment and within circlee
+      //Checking whether cloesest point is on line segment and within circlee
       if ((point1.x >= closestPoint.x && point1.x <= nextClosest1.x) || (point1.x <= closestPoint.x && point1.x >= nextClosest1.x)){
         if ((point1.y >= closestPoint.y && point1.y <= nextClosest1.y) || (point1.y <= closestPoint.y && point1.y >= nextClosest1.y)){
           if (distance1 <= b.radius){
@@ -279,11 +260,8 @@
     }
 
     function resolvePolygon(ob1, ob2, returnlist){
-      //console.log(ob1.speed)
-      //console.log(ob2.speed)
       minIntersection = returnlist[1];
       intersectionNormal = returnlist[2];
-      //console.log(intersectionNormal)
       var normal = new vec(intersectionNormal.x, intersectionNormal.y);
 
       normal.mult(minIntersection)//get vector with which to eject object
@@ -297,7 +275,6 @@
       }
       obj.position.x += normal.x; //ejects objects position
       obj.position.y += normal.y;
-      //console.log(obj)
       if (obj.name === "poly"){//if poly ejects points
         for (var i = 0; i < obj.points.length; i++){
           obj.points[i].x += normal.x;
@@ -312,7 +289,6 @@
 
 
 
-//console.log(oldvelx2, oldvely2);
       //method taken from https://gamedev.stackexchange.com/questions/48587/resolving-a-collision-with-forces
       var frictionFactor = 0.4;//determines what percent of energy is lost in a collision
       var axis = new vec(intersectionNormal.y, -intersectionNormal.x)
@@ -322,16 +298,6 @@
       ob2.speed.x = -frictionFactor*((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
       ob2.speed.y = -frictionFactor*((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
 
-      // ob1.speed.x += 2*ob1.speed.x*axis.x * frictionFactor;
-      // ob1.speed.y += 2*ob1.speed.y*axis.y * frictionFactor;
-      // ob2.speed.x += -2*ob1.speed.x*axis.x * frictionFactor;
-      // ob2.speed.y += -2*ob1.speed.y*axis.y * frictionFactor;
-
-      // ob1.speed.x = ((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      // ob1.speed.y = ((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      // ob2.speed.x = ((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
-      // ob2.speed.y = ((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
-      //console.log(oldvelx1, oldvely1);
 
     }
 
@@ -353,31 +319,20 @@
         ob1 = objectList[i];
         ob2 = objectList[j];
         var direction = ob2.position.sub1(ob1.position);
-        ////console.log(ob2.position);
-        ////console.log(ob1.position)
-        ////console.log(direction);
-        //return;
-        //var direction = new vec(ob2.position.x - ob1.position.x,ob2.position.y - ob1.position.y);
-      //console.log(direction);
         var absol = (direction.x**2 + direction.y**2)**0.5;
         direction.divi(absol); //getting unit vector of one ccentre to another
         //flip one direction as will go in other direction
         var direction1 = new vec(direction.x,direction.y);
         var direction2 = new vec(-direction.x,-direction.y);
-        //console.log(absol)
         // var direction1 = new vec(a*direction.x,c*direction.y);
         // var direction2 = new vec(b*direction.x,d*direction.y);
 
         //determine acceleartion using newtons universal law of gravitation
         var accel1 = direction1.mult1(g*((ob2.mass)/(absol**2)));
-        //console.log(g*((ob2.mass*ob1.mass)/(absol**2)));
         var accel2 = direction2.mult1(g*((ob1.mass)/(absol**2)));
         ob1.acceleration.add(accel1);
         ob2.acceleration.add(accel2);
       }
-
-        //console.log(ob1.acceleration);
-        //console.log(ob2.acceleration);
 
 
         }
@@ -391,15 +346,10 @@
     }
 
     function loop(canvas, ctx, objectList, intervalID){
-      //console.log(objectList);
       //makes it so trace of objects isnt left
       ctx.clearRect(0,0,canvas.width, canvas.height);
-      //ctx.fillStyle = "#FFFFFF";
-      //ctx.fillRect(0,0, canvas.width, canvas.height);
       for (var i = 0; i <objectList.length; i++){
-        //console.log(objectList[i]);
         objectList[i].acceleration.mult(0);//makes sure acceleration doesnt keep getting added to
-        //console.log(objectList[i].acceleration);
       }
       var x = 1;
       for (var i = 0; i < objectList.length; i++){//goes through every pair of objects, finds out if theyre colliding and if they are resolves the collision
@@ -407,38 +357,27 @@
           ob1 = objectList[i];
           ob2 = objectList[j];
           if (ob1.name === "poly" && ob2.name === "poly"){
-            //console.log(ob1, ob2);
-            //console.log("TEST");
             collided = polygonCollision(ob1, ob2);
           }
           else if (ob1.name === "circle" && ob2.name === "circle"){
             collided = circleCollision(ob1, ob2);
           }
           else if ((ob1.name === "circle" && ob2.name === "poly")||(ob1.name === "poly" && ob2.name === "circle")){
-            //console.log("hello")
-
             collided = polygonCircleCollision(ob1, ob2);
           }
           else{
             collided = [false]
           }
-          //console.log(collided);
           if (collided[0] === true){
-          //console.log(ob1)
-          //console.log(ob2)
             resolvePolygon(ob1, ob2, collided);}
 
         }
         x++;
       }
       objectList = alternativeGravity(objectList);//apply gravity
-      //console.log(objectList[0].acceleration)
       for (var i = 0; i <objectList.length; i++){
         objectList[i].addSpeedByFrame();//update speed and positon of all objects
         objectList[i].addDispByFrame();
-        //console.log(objectList[i].position);
-         //console.log(objectList[i].speed);
-        ////console.log(objectList[i].acceleration);
       }
 
 
@@ -461,7 +400,6 @@
         }
 
       }
-      //ctx.clearRect(0,0,canvas.width, canvas.height);
 
     }
 
@@ -508,7 +446,6 @@
       var speed = createVector(speedx, speedy);
       var acceleration = createVector(accelerationx, accelerationy)
       var circ = new circle(position, speed, acceleration, mass, restitution, radius)
-      //console.log(circ)
       return circ;
     }
 
