@@ -11,7 +11,7 @@
         this.x += vec2.x;
         this.y += vec2.y;
       }
-      add1(vec2){
+      add1(vec2){ //vector operation that doesnt change original vector
         var vec3 = new vec(this.x + vec2.x, this.y + vec2.y);
         return vec3
       }
@@ -68,7 +68,7 @@
       constructor(position, speed, acceleration, mass,restitution,radius){
         super(position, speed, acceleration, mass, restitution);
         this.radius = radius;
-        this.name = "circle";
+        this.name = "circle"; //Will be used to differentiate objects
       }
     }
 
@@ -80,23 +80,17 @@
       }
     }
 
-    class poly extends ob{
+    class poly extends ob{ //poly subclass of ob
       constructor(position, speed, acceleration, mass, restitution, points){
         super(position, speed, acceleration, mass, restitution);
-        this.points = points;
-        this.radius = 0;
-        this.name = "poly";
+        this.points = points; //Points stored as [{x:,y:},...]
+        this.name = "poly"; //Identifier
         var disp = 0;
-        for (var i = 0; i < points.length; i++){
-          disp = ((position.x - points[i].x)**2 +(position.y - points[i].y**2))**0.5;
-          this.radius += disp;
-        }
-        this.radius /= points.length;
       }
       addDispByFrame(){ //Will be called every cycle to change displacement based on speed
         this.speed.divi(60);
         this.position.add(this.speed);//speed stored in m/s so divided by 60 for 60fps
-        for (var i = 0; i < this.points.length; i++){
+        for (var i = 0; i < this.points.length; i++){//Altering function to also update list of points in polygon
           this.points[i].x += this.speed.x;
           this.points[i].y += this.speed.y;
         }
@@ -131,7 +125,7 @@
               len2 = p1.x - p2.x
               sumsquare = len1**2 + len2**2 //doing this according to advice from http://www.dyn4j.org/2010/01/sat/
               sqroot = sumsquare**0.5
-              var normal = { x: len1/sqroot, y: len2/sqroot };
+              var normal = { x: len1/sqroot, y: len2/sqroot };//Will be used for collision resolution
 
               minA = maxA = undefined;
               // for each vertex in the first shape, project it onto the line perpendicular to the edge
@@ -167,13 +161,13 @@
               }
               else{
                 //console.log("yeet")
-                if ((maxA - minB) < minIntersection){
+                if ((maxA - minB) < minIntersection){ //checks for collision
                   minIntersection = maxA - minB;
                   intersectionNormal = normal;
                 }
                 if ((maxB - minA) < minIntersection){
                   minIntersection = maxB - minA;
-                  normal.x = -normal.x;
+                  normal.x = -normal.x; //change direction to opposite if on other side
                   normal.y = -normal.y;
                   intersectionNormal = normal
                 }
@@ -184,13 +178,13 @@
     // //console.log("polygons intersect!");
       var returnlist = [true, minIntersection, intersectionNormal];
       return returnlist;
-      //code copied and adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] ends here
+      //code copied AND adapted from https://stackoverflow.com/questions/10962379/how-to-check-intersection-between-2-rotated-rectangles [accessed 21/08/2019] ends here
 
     }
 
     function circleCollision(ob1,ob2){
-      var direction = ob1.position.sub1(ob2.position);
-      var distance = (direction.x**2 + direction.y**2)**0.5
+      var direction = ob1.position.sub1(ob2.position);//gets vector from one circle to another
+      var distance = (direction.x**2 + direction.y**2)**0.5//gets distance from one circle to another
       if (distance < ob1.radius + ob2.radius){
         direction.divi(-distance);
         return [true, ob1.radius + ob2.radius - distance, direction];
@@ -318,11 +312,19 @@
 //console.log(oldvelx2, oldvely2);
       //method taken from https://gamedev.stackexchange.com/questions/48587/resolving-a-collision-with-forces
       var frictionFactor = 0.4;//determines what percent of energy is lost in a collision
+      var axis = new vec(intersectionNormal.y, -intersectionNormal.x)
+      console.log(intersectionNormal)
+      ob1.speed.x += 2*intersectionNormal.x*frictionFactor*((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
+      ob1.speed.y += 2*intersectionNormal.y*frictionFactor*((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
+      ob2.speed.x += 2*-intersectionNormal.x*frictionFactor*((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
+      ob2.speed.y += 2*-intersectionNormal.y*frictionFactor*((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
+      console.log(ob2.speed.x)
 
-      ob1.speed.x = frictionFactor*((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      ob1.speed.y = frictionFactor*((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      ob2.speed.x = frictionFactor*((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
-      ob2.speed.y = frictionFactor*((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
+      ob1.speed.x += 2*ob1.speed.x*axis.x * frictionFactor;
+      ob1.speed.y += 2*ob1.speed.y*axis.y * frictionFactor;
+      ob2.speed.x += -2*ob1.speed.x*axis.x * frictionFactor;
+      ob2.speed.y += -2*ob1.speed.y*axis.y * frictionFactor;
+
       // ob1.speed.x = ((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       // ob1.speed.y = ((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       // ob2.speed.x = ((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
@@ -585,7 +587,7 @@
     var world = createPoly(250,(6371000)+300,0,0,0,0,5972000000000000000000000,100,"square",6371000*2)
     var poly2 = createPoly(285,80,0,0,0,0,80,4,"hexagon",20)
     var cir = createCircle(200,0,0,0,0,0,50,4,20)
-    var cir1 = createCircle(340,40, 0,0,0,0,50,4,20)
+    var cir1 = createCircle(30,270, 100,0,0,0,50,4,20)
     var oblist = [world, cir1];
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
