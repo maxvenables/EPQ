@@ -232,22 +232,23 @@
 
       var nextClosest1 = a[(closestPointIndex + a.length - 1)%a.length]; //finds two adjacent points to closest point
       var nextClosest2 = a[(closestPointIndex + a.length + 1)%a.length];
-      var norm1 = new vec(closestPoint.y - nextClosest1.y, -1*(closestPoint.x - nextClosest1.x));
+      var norm1 = new vec(closestPoint.y - nextClosest1.y, -1*(closestPoint.x - nextClosest1.x)); //finding normals of the lines between the closestPoint and the adjacent ones
       //var norm2 = new vec(closestPoint.y - nextClosest2.y, -1*(closestPoint.x - nextClosest2.x));
 
       var norm2 = new vec(nextClosest2.y - closestPoint.y, -1*(nextClosest2.x - closestPoint.x));
-      var dist1 = ((norm1.x**2) + (norm1.y**2))**0.5
+      var dist1 = ((norm1.x**2) + (norm1.y**2))**0.5//finding length of edges
       var dist2 = ((norm2.x**2) + (norm2.y**2))**0.5
-      norm1.divi(dist1);
+      norm1.divi(dist1);//getting unit vectors
       norm2.divi(dist2);
       //console.log(closestPoint)
       //console.log(nextClosest1)
 
+      //calculate distance from circle centre to nearest point on those lines
       var distance1 = (Math.abs(((closestPoint.y - nextClosest1.y)*b.position.x)-((closestPoint.x - nextClosest1.x)*b.position.y)+(closestPoint.x*nextClosest1.y)-(closestPoint.y*nextClosest1.x)))/dist1;
       var distance2 = (Math.abs(((closestPoint.y - nextClosest2.y)*b.position.x)-((closestPoint.x - nextClosest2.x)*b.position.y)+(closestPoint.x*nextClosest2.y)-(closestPoint.y*nextClosest2.x)))/dist2;
       //console.log(closestPoint)
 
-
+      //finding actual closest point on line to circle centre
       point1 = b.position.add1(norm1.mult1(-distance1));
       point2 = b.position.add1(norm2.mult1(-distance2));
       //console.log(norm1)
@@ -257,7 +258,7 @@
       //console.log(point2)
       var norm = undefined;
       var distance = 0;
-
+      //Checking wheter cloesest point is on line segment and within circlee
       if ((point1.x >= closestPoint.x && point1.x <= nextClosest1.x) || (point1.x <= closestPoint.x && point1.x >= nextClosest1.x)){
         if ((point1.y >= closestPoint.y && point1.y <= nextClosest1.y) || (point1.y <= closestPoint.y && point1.y >= nextClosest1.y)){
           if (distance1 <= b.radius){
@@ -285,19 +286,19 @@
       //console.log(intersectionNormal)
       var normal = new vec(intersectionNormal.x, intersectionNormal.y);
 
-      normal.mult(minIntersection)
+      normal.mult(minIntersection)//get vector with which to eject object
       obj = undefined;
-      if (ob1.restitution < ob2.restitution){
+      if (ob1.restitution < ob2.restitution){//deciding which object to eject
         obj = ob1;
         normal.mult(-1)
       }
       else{
         obj = ob2;
       }
-      obj.position.x += normal.x;
+      obj.position.x += normal.x; //ejects objects position
       obj.position.y += normal.y;
       //console.log(obj)
-      if (obj.name === "poly"){
+      if (obj.name === "poly"){//if poly ejects points
         for (var i = 0; i < obj.points.length; i++){
           obj.points[i].x += normal.x;
           obj.points[i].y += normal.y;
@@ -315,12 +316,11 @@
       //method taken from https://gamedev.stackexchange.com/questions/48587/resolving-a-collision-with-forces
       var frictionFactor = 0.4;//determines what percent of energy is lost in a collision
       var axis = new vec(intersectionNormal.y, -intersectionNormal.x)
-      console.log(intersectionNormal)
+      //calculating speed after collision
       ob1.speed.x = frictionFactor*((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       ob1.speed.y = frictionFactor*((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       ob2.speed.x = -frictionFactor*((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
       ob2.speed.y = -frictionFactor*((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
-      console.log(ob2.speed.x)
 
       // ob1.speed.x += 2*ob1.speed.x*axis.x * frictionFactor;
       // ob1.speed.y += 2*ob1.speed.y*axis.y * frictionFactor;
@@ -360,40 +360,15 @@
         //var direction = new vec(ob2.position.x - ob1.position.x,ob2.position.y - ob1.position.y);
       //console.log(direction);
         var absol = (direction.x**2 + direction.y**2)**0.5;
-        direction.divi(absol);
-        var a = 1;
-        var b = 1;
-        var c = 1;
-        var d = 1;
-        if ((ob1.position.x <= ob2.position.x) && (ob1.position.y <= ob2.position.y)){
-          //console.log("1")
-          a = -1;
-          b = -1;
-          c = 1;
-          d = 1;
-        }
-        else if ((ob1.position.x >= ob2.position.x) && (ob1.position.y >= ob2.position.y)){
-          //console.log("2")
-        a = 1;
-        b = 1;
-        c = -1;
-        d = -1;
-        }
-        else if ((ob1.position.x >= ob2.position.x) && (ob1.position.y <= ob2.position.y)){
-          //console.log("3")
-        c  = -1;
-        d = -1;
-      }
-        else if ((ob1.position.x <= ob2.position.x) && (ob1.position.y >= ob2.position.y)){
-          //console.log("4")
-      a = -1;
-      b = -1;
-      }
+        direction.divi(absol); //getting unit vector of one ccentre to another
+        //flip one direction as will go in other direction
         var direction1 = new vec(direction.x,direction.y);
         var direction2 = new vec(-direction.x,-direction.y);
         //console.log(absol)
         // var direction1 = new vec(a*direction.x,c*direction.y);
         // var direction2 = new vec(b*direction.x,d*direction.y);
+
+        //determine acceleartion using newtons universal law of gravitation
         var accel1 = direction1.mult1(g*((ob2.mass)/(absol**2)));
         //console.log(g*((ob2.mass*ob1.mass)/(absol**2)));
         var accel2 = direction2.mult1(g*((ob1.mass)/(absol**2)));
@@ -417,16 +392,17 @@
 
     function loop(canvas, ctx, objectList, intervalID){
       //console.log(objectList);
+      //makes it so trace of objects isnt left
       ctx.clearRect(0,0,canvas.width, canvas.height);
       //ctx.fillStyle = "#FFFFFF";
       //ctx.fillRect(0,0, canvas.width, canvas.height);
       for (var i = 0; i <objectList.length; i++){
         //console.log(objectList[i]);
-        objectList[i].acceleration.mult(0);
+        objectList[i].acceleration.mult(0);//makes sure acceleration doesnt keep getting added to
         //console.log(objectList[i].acceleration);
       }
       var x = 1;
-      for (var i = 0; i < objectList.length; i++){
+      for (var i = 0; i < objectList.length; i++){//goes through every pair of objects, finds out if theyre colliding and if they are resolves the collision
         for (var j = x; j < objectList.length; j++){
           ob1 = objectList[i];
           ob2 = objectList[j];
@@ -455,10 +431,10 @@
         }
         x++;
       }
-      objectList = alternativeGravity(objectList);
+      objectList = alternativeGravity(objectList);//apply gravity
       //console.log(objectList[0].acceleration)
       for (var i = 0; i <objectList.length; i++){
-        objectList[i].addSpeedByFrame();
+        objectList[i].addSpeedByFrame();//update speed and positon of all objects
         objectList[i].addDispByFrame();
         //console.log(objectList[i].position);
          //console.log(objectList[i].speed);
@@ -470,7 +446,7 @@
       var scale = 1;
       ctx.beginPath();
 
-      for (var i = 0; i < objectList.length; i++){
+      for (var i = 0; i < objectList.length; i++){//Draws every object
         if (objectList[i].name ==="poly"){
           ctx.moveTo(objectList[i].points[0].x/scale,objectList[i].points[0].y/scale);
           for (var j = 1; j < objectList[i].points.length + 1; j++){
