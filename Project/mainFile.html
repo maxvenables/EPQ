@@ -290,14 +290,13 @@
 
 
       //method taken from https://gamedev.stackexchange.com/questions/48587/resolving-a-collision-with-forces
-      var frictionFactor = 0.4;//determines what percent of energy is lost in a collision
+      var frictionFactor = 1;//determines what percent of energy is lost in a collision
       var axis = new vec(intersectionNormal.y, -intersectionNormal.x)
       //calculating speed after collision
       ob1.speed.x = frictionFactor*((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       ob1.speed.y = frictionFactor*((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      ob2.speed.x = -frictionFactor*((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
-      ob2.speed.y = -frictionFactor*((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
-
+      ob2.speed.x = frictionFactor*((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
+      ob2.speed.y = frictionFactor*((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
 
     }
 
@@ -503,7 +502,7 @@
     var poly2 = createPoly(285,80,0,0,0,0,80,4,"hexagon",20)
     var cir = createCircle(200,40,0,0,0,0,50,4,20)
     var cir1 = createCircle(30,40, 100,0,0,0,50,4,20)
-    var oblist = [cir, cir1];
+    var oblist = [world,cir, cir1];
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
 
