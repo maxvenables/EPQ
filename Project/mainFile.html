@@ -107,24 +107,20 @@
       var minIntersection = Infinity;
       var intersectionNormal = undefined;
       for (i = 0; i < polygons.length; i++) {
-
           // for each polygon, look at each edge of the polygon, and determine if it separates
           // the two shapes
           var polygon = polygons[i];
           for (i1 = 0; i1 < polygon.length; i1++) {
-
               // grab 2 vertices to create an edge
               var i2 = (i1 + 1) % polygon.length;
               var p1 = polygon[i1];
               var p2 = polygon[i2];
-
               // find the normalised line perpendicular to this edge
               len1 = p2.y - p1.y
               len2 = p1.x - p2.x
               sumsquare = len1**2 + len2**2 //doing this according to advice from http://www.dyn4j.org/2010/01/sat/
               sqroot = sumsquare**0.5
               var normal = { x: len1/sqroot, y: len2/sqroot };//Will be used for collision resolution
-
               minA = maxA = undefined;
               // for each vertex in the first shape, project it onto the line perpendicular to the edge
               // and keep track of the min and max of these values
@@ -137,7 +133,6 @@
                       maxA = projected;
                   }
               }
-
               // for each vertex in the second shape, project it onto the line perpendicular to the edge
               // and keep track of the min and max of these values
               minB = maxB = undefined;
@@ -297,6 +292,46 @@
       ob1.speed.y = frictionFactor*((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
       ob2.speed.x = frictionFactor*((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
       ob2.speed.y = frictionFactor*((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
+
+
+
+
+
+      // console.log(intersectionNormal)
+      // intersectionNormal.x *= 2
+      // intersectionNormal.y *= 2
+      //
+      // ob1.speed.x += intersectionNormal.x* ob1.speed.x
+      // ob1.speed.y += intersectionNormal.y* ob1.speed.y
+      // ob2.speed.x += -intersectionNormal.x* ob2.speed.x
+      // ob2.speed.y += -intersectionNormal.y* ob2.speed.y
+
+      // var oldspeed1 = ((ob1.speed.x**2) + (ob1.speed.y**2))**0.5
+      // var oldspeed2 = ((ob2.speed.x**2) + (ob2.speed.y**2))**0.5
+      // var newspeed1;
+      // var newspeed2;
+      // console.log(ob1.speed)
+      // console.log(ob2.speed)
+      //
+      // newspeed1 = ((oldspeed1 * (ob1.mass - ob2.mass)) + (oldspeed2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
+      // newspeed2 = ((oldspeed2 * (ob2.mass - ob1.mass)) + (oldspeed1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
+      // ob1.speed.x = (-intersectionNormal.x)*newspeed1
+      // ob1.speed.y = (-intersectionNormal.y)*newspeed1
+      // ob2.speed.x = (intersectionNormal.x)*newspeed2
+      // ob2.speed.y = (intersectionNormal.y)*newspeed2
+      // console.log(ob1.speed)
+      // console.log(ob2.speed)
+
+
+
+
+
+      //console.log(intersectionNormal)
+      // ob1.speed.x = ((intersectionNormal.x*oldvelx1 * (ob1.mass - ob2.mass)) + (-intersectionNormal.x*oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
+      // ob1.speed.y = ((intersectionNormal.y*oldvely1 * (ob1.mass - ob2.mass)) + (-intersectionNormal.y*oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
+      // ob2.speed.x = ((-intersectionNormal.x*oldvelx2 * (ob2.mass - ob1.mass)) + (intersectionNormal.x*oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
+      // ob2.speed.y = ((-intersectionNormal.y*oldvely2 * (ob2.mass - ob1.mass)) + (intersectionNormal.y*oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
+
 
     }
 
@@ -501,8 +536,8 @@
     var world = createPoly(250,(6371000)+300,0,0,0,0,5972000000000000000000000,100,"square",6371000*2)
     var poly2 = createPoly(285,80,0,0,0,0,80,4,"hexagon",20)
     var cir = createCircle(200,40,0,0,0,0,50,4,20)
-    var cir1 = createCircle(30,40, 100,0,0,0,50,4,20)
-    var oblist = [world,cir, cir1];
+    var cir1 = createCircle(30,190, 100,0,0,0,50,4,20)
+    var oblist = [world, cir1];
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
 
