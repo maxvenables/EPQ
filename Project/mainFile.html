@@ -278,7 +278,7 @@
         }
       }
 
-
+      //code copied and adapted from https://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331 [accesed 27/08/2019] starts here
 
       var rv = ob2.speed.sub1(ob1.speed)
 
@@ -302,87 +302,8 @@
       ob1.speed.sub(impulse.mult1(1 / ob1.mass))
       ob2.speed.add(impulse.mult1(1 / ob2.mass))
 
+      //code copied and adapted from https://gamedevelopment.tutsplus.com/tutorials/how-to-create-a-custom-2d-physics-engine-the-basics-and-impulse-resolution--gamedev-6331 [accesed 27/08/2019] ends here
 
-
-
-
-
-
-
-      // var normal = new vec(intersectionNormal.x, intersectionNormal.y);
-      //
-      // normal.mult(minIntersection)//get vector with which to eject object
-      // obj = undefined;
-      // if (ob1.restitution < ob2.restitution){//deciding which object to eject
-      //   obj = ob1;
-      //   normal.mult(-1)
-      // }
-      // else{
-      //   obj = ob2;
-      // }
-      // obj.position.x += normal.x; //ejects objects position
-      // obj.position.y += normal.y;
-      // if (obj.name === "poly"){//if poly ejects points
-      //   for (var i = 0; i < obj.points.length; i++){
-      //     obj.points[i].x += normal.x;
-      //     obj.points[i].y += normal.y;
-      //   }
-      // }
-      //
-      // oldvelx1 = ob1.speed.x; //preventing passing by reference annoyance
-      // oldvely1 = ob1.speed.y;
-      // oldvelx2 = ob2.speed.x;
-      // oldvely2 = ob2.speed.y;
-      //
-      //
-      //
-      // //method taken from https://gamedev.stackexchange.com/questions/48587/resolving-a-collision-with-forces
-      // var frictionFactor = 1;//determines what percent of energy is lost in a collision
-      // var axis = new vec(intersectionNormal.y, -intersectionNormal.x)
-      //calculating speed after collision
-      // ob1.speed.x = frictionFactor*((oldvelx1 * (ob1.mass - ob2.mass)) + (oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      // ob1.speed.y = frictionFactor*((oldvely1 * (ob1.mass - ob2.mass)) + (oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      // ob2.speed.x = frictionFactor*((oldvelx2 * (ob2.mass - ob1.mass)) + (oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
-      // ob2.speed.y = frictionFactor*((oldvely2 * (ob2.mass - ob1.mass)) + (oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
-
-
-
-
-
-      // console.log(intersectionNormal)
-      // intersectionNormal.x *= 2
-      // intersectionNormal.y *= 2
-      //
-      // ob1.speed.x += intersectionNormal.x* ob1.speed.x
-      // ob1.speed.y += intersectionNormal.y* ob1.speed.y
-      // ob2.speed.x += -intersectionNormal.x* ob2.speed.x
-      // ob2.speed.y += -intersectionNormal.y* ob2.speed.y
-
-      // var oldspeed1 = ((ob1.speed.x**2) + (ob1.speed.y**2))**0.5
-      // var oldspeed2 = ((ob2.speed.x**2) + (ob2.speed.y**2))**0.5
-      // var newspeed1;
-      // var newspeed2;
-      // console.log(ob1.speed)
-      // console.log(ob2.speed)
-      //
-      // newspeed1 = ((oldspeed1 * (ob1.mass - ob2.mass)) + (oldspeed2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      // newspeed2 = ((oldspeed2 * (ob2.mass - ob1.mass)) + (oldspeed1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
-      // ob1.speed.x = (-intersectionNormal.x)*newspeed1
-      // ob1.speed.y = (-intersectionNormal.y)*newspeed1
-      // ob2.speed.x = (intersectionNormal.x)*newspeed2
-      // ob2.speed.y = (intersectionNormal.y)*newspeed2
-      // console.log(ob1.speed)
-      // console.log(ob2.speed)
-
-
-
-
-
-      //console.log(intersectionNormal)
-      // ob1.speed.x = ((intersectionNormal.x*oldvelx1 * (ob1.mass - ob2.mass)) + (-intersectionNormal.x*oldvelx2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      // ob1.speed.y = ((intersectionNormal.y*oldvely1 * (ob1.mass - ob2.mass)) + (-intersectionNormal.y*oldvely2 * 2 * ob2.mass))/(ob1.mass + ob2.mass)//**0.5
-      // ob2.speed.x = ((-intersectionNormal.x*oldvelx2 * (ob2.mass - ob1.mass)) + (intersectionNormal.x*oldvelx1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5)
-      // ob2.speed.y = ((-intersectionNormal.y*oldvely2 * (ob2.mass - ob1.mass)) + (intersectionNormal.y*oldvely1 * 2 * ob1.mass))/(ob1.mass + ob2.mass)//**0.5
 
 
     }
