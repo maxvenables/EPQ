@@ -254,7 +254,7 @@
 
     }
 
-    function resolvePolygon(ob1, ob2, returnlist){
+    function resolveCollision(ob1, ob2, returnlist){
       minIntersection = returnlist[1];
       intersectionNormal = returnlist[2];
 
@@ -298,7 +298,7 @@
       j /= 1 / ob1.mass + 1 / ob2.mass
 
       // Apply impulse
-      var impulse = intersectionNormal.mult1(j)
+      var impulse = createVector(intersectionNormal.x*j, intersectionNormal.y*j)
       ob1.speed.sub(impulse.mult1(1 / ob1.mass))
       ob2.speed.add(impulse.mult1(1 / ob2.mass))
 
@@ -376,7 +376,7 @@
             collided = [false]
           }
           if (collided[0] === true){
-            resolvePolygon(ob1, ob2, collided);}
+            resolveCollision(ob1, ob2, collided);}
 
         }
         x++;
@@ -509,8 +509,8 @@
     var world = createPoly(250,(6371000)+300,0,0,0,0,5972000000000000000000000,100,"square",6371000*2)
     var poly2 = createPoly(285,40,0,0,0,0,80,1,"hexagon",20)
     var cir = createCircle(200,40,0,0,0,0,50,1,20)
-    var cir1 = createCircle(30,40, 100,0,0,0,50,0.8,20)
-    var oblist = [poly2, cir1];
+    var cir1 = createCircle(30,50, 100,0,0,0,50,0.8,20)
+    var oblist = [world,poly2, cir1];
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
 
@@ -521,7 +521,7 @@
     ////console.log(poly1.acceleration);
 
 
-    //resolvePolygon(poly1, poly2, polygonCollision(poly1, poly2));
+    //resolveCollision(poly1, poly2, polygonCollision(poly1, poly2));
     //console.log(poly1.points);
     //console.log(poly2.points);
 
