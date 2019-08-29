@@ -389,6 +389,7 @@
 
 
 
+      //var scale = 1600000;
       var scale = 1;
       ctx.beginPath();
 
@@ -401,9 +402,12 @@
           ctx.stroke();
         }
         else if (objectList[i].name === "circle"){
-          ctx.moveTo(objectList[i].position.x+objectList[i].radius,objectList[i].position.y)
-          ctx.arc(objectList[i].position.x,objectList[i].position.y,objectList[i].radius,0, 2 * Math.PI)
+          ctx.moveTo((objectList[i].position.x/scale)+(objectList[i].radius/scale),(objectList[i].position.y/scale))
+          ctx.arc((objectList[i].position.x/scale),(objectList[i].position.y/scale),(objectList[i].radius/scale),0, 2 * Math.PI)
           ctx.stroke();
+          // ctx.moveTo((objectList[i].position.x)+(objectList[i].radius),(objectList[i].position.y))
+          // ctx.arc((objectList[i].position.x),(objectList[i].position.y),(objectList[i].radius),0, 2 * Math.PI)
+          // ctx.stroke();
         }
 
       }
@@ -510,7 +514,11 @@
     var poly2 = createPoly(285,40,0,0,0,0,80,1,"hexagon",20)
     var cir = createCircle(200,40,0,0,0,0,50,1,20)
     var cir1 = createCircle(30,50, 100,0,0,0,50,0.8,20)
-    var oblist = [world,poly2, cir1];
+
+    var earth = createCircle(400000000,400000000,0,0,0,0,5972000000000000000000000,1,6371000)//32000000
+    var moon = createCircle(15600000,400000000,0,1023.056,0,0,73480000000000000000000,1,1737000)
+
+    var oblist = [poly2, cir1];
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
 
