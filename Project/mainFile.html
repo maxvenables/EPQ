@@ -382,6 +382,8 @@
         x++;
       }
       objectList = alternativeGravity(objectList);//apply gravity
+      //objectList = normalGravity(objectList);//apply gravity
+
       for (var i = 0; i <objectList.length; i++){
         objectList[i].addSpeedByFrame();//update speed and positon of all objects
         objectList[i].addDispByFrame();
@@ -474,10 +476,10 @@
     //var position1 = new vec(15600000,400000000);
     //var position = new vec(400000000,400000000);
 
-    var position = new vec(250,6371000);
+    var position = new vec(170,40);
     //var position1 = new vec(0, 6378100)//8000000
     //var position1 = new vec(22500,25500)
-    var position1 = new vec(285,80)
+    var position1 = new vec(200,40)
     //var position1 = new vec(225,285)
     //var position2 = new vec(285, 225)
     //var position1 = new vec(285,225)
@@ -492,10 +494,10 @@
     //var points = [{x:25000,y:25000},{x:25000,y:26000},{x:26000,y:26000},{x:26000,y:25000}];
     //var points = [{x:0,y:50000},{x:0,y:30000},{x:50000,y:30000},{x:50000,y:50000}];
     //var points = [{x:392000000,y:392000000},{x:408000000,y:392000000},{x:408000000,y:408000000},{x:392000000,y:408000000}];
-    var points = [{x:0,y:500},{x:0,y:300},{x:500,y:300},{x:500,y:500}];
+    var points = [{x:165,y:50},{x:165,y:30},{x:175,y:30},{x:175,y:50}];
 
     //var points1 = [{x:7600000,y:392000000},{x:23600000,y:392000000},{x:23600000,y:408000000},{x:7600000,y:408000000}];
-    var points1 = [{x:275,y:90},{x:275,y:70},{x:295,y:70},{x:295,y:90}];
+    var points1 = [{x:190,y:30},{x:180,y:70},{x:200,y:90},{x:210,y:80},{x:200, y:60}];
     //var points2 = [{x:220,y:280},{x:220,y:290},{x:230,y:290},{x:230,y:280}];
     //var points3 = [{x:280,y:220},{x:280,y:230},{x:290,y:230},{x:290,y:220}];
 
@@ -512,13 +514,44 @@
     //console.log(polygonCollision(poly1, poly2));
     var world = createPoly(250,(6371000)+300,0,0,0,0,5972000000000000000000000,100,"square",6371000*2)
     var poly2 = createPoly(285,40,0,0,0,0,80,1,"hexagon",20)
-    var cir = createCircle(200,40,0,0,0,0,50,1,20)
-    var cir1 = createCircle(30,50, 100,0,0,0,50,0.8,20)
+
+    var cir1 = createCircle(20,400, 20,-80,0,0,50,0.8,20)
 
     var earth = createCircle(400000000,400000000,0,0,0,0,5972000000000000000000000,1,6371000)//32000000
     var moon = createCircle(15600000,400000000,0,1023.056,0,0,73480000000000000000000,1,1737000)
 
-    var oblist = [poly2, cir1];
+    var tri = createPoly(20,40,0,0,0,0,80,0.1,"triangle",20)
+    var squ = createPoly(50,40,0,0,0,0,80,0.1,"square",20)
+    var pent = createPoly(80,40,0,0,0,0,80,0.1,"pentagon",20)
+    var hex = createPoly(110,40,0,0,0,0,80,0.1,"hexagon",20)
+    var cir = createCircle(140,40,0,0,0,0,80,0.1,10)
+    var rect = new poly(position, speed, acceleration, 80, 0.1, points)
+    var rando = new poly(position1,speed1, acceleration1, 80, 0.1, points1)
+
+
+    var oblist = [world, poly2];
+
+    var obb = undefined;
+    //console.log(oblist)
+
+    // numofsquares = 100;
+    // xs = Math.floor(numofsquares/10)
+    // ys = numofsquares % 10
+    // var z =0;
+    //
+    // for (var i = 0; i < 10; i++){
+    //   for (var j = 0; j < xs; j++){
+    //     obb = createPoly(i*20+20,j*20+20,0,0,0,0,10,0.1,"square",10);
+    //     oblist.push(obb);
+    //     z = j;
+    //   }
+    // }
+    //
+    // for (var i = 0; i< ys; i++){
+    //   obb = createPoly(i*20+20,(z+1)*20+20,0,0,0,0,10,0.1,"square",10);
+    //   oblist.push(obb)
+    // }
+
     //console.log(cir.name)
     startloop(canvas, ctx, oblist);
 
